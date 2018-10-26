@@ -1,0 +1,1007 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="安装RabbitMQ环境说明: 1.操作系统:centos 7 2.RabbitMq:3.7.3 3.erlang:v20.2.3 4.centos已经关闭防火墙 123456&amp;lt;!--查看防火墙状态--&amp;gt;systemctl status firewalld.service&amp;lt;!--关闭防火墙--&amp;gt;systemctl stop firewalld.service #停止fire">
+<meta name="keywords">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RabbitMQ安装及简单使用">
+<meta property="og:url" content="http://loveyy.net/2018/03/13/编程/mq/RabbitMQ/index.html">
+<meta property="og:site_name" content="燕良山好汉的博客">
+<meta property="og:description" content="安装RabbitMQ环境说明: 1.操作系统:centos 7 2.RabbitMq:3.7.3 3.erlang:v20.2.3 4.centos已经关闭防火墙 123456&amp;lt;!--查看防火墙状态--&amp;gt;systemctl status firewalld.service&amp;lt;!--关闭防火墙--&amp;gt;systemctl stop firewalld.service #停止fire">
+<meta property="og:image" content="http://p5in4o880.bkt.clouddn.com//loveyy/image/mq/mq_t.png">
+<meta property="og:updated_time" content="2018-10-26T06:23:36.907Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RabbitMQ安装及简单使用">
+<meta name="twitter:description" content="安装RabbitMQ环境说明: 1.操作系统:centos 7 2.RabbitMq:3.7.3 3.erlang:v20.2.3 4.centos已经关闭防火墙 123456&amp;lt;!--查看防火墙状态--&amp;gt;systemctl status firewalld.service&amp;lt;!--关闭防火墙--&amp;gt;systemctl stop firewalld.service #停止fire">
+<meta name="twitter:image" content="http://p5in4o880.bkt.clouddn.com//loveyy/image/mq/mq_t.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+<script>
+    (function(){
+        if(''){
+            if (prompt('这是私人日志,请输入文章密码') !== ''){
+                alert('亲,密码错误,请联系作者!');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+
+  <link rel="canonical" href="http://loveyy.net/2018/03/13/编程/mq/RabbitMQ/"/>
+
+
+
+
+
+  <title>RabbitMQ安装及简单使用 | 燕良山好汉的博客</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?0de31a9b94e2d0af07ff23b34a742643";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">燕良山好汉的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://loveyy.net/2018/03/13/编程/mq/RabbitMQ/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Andrew Song">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="燕良山好汉的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                RabbitMQ安装及简单使用
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-13T13:50:14+08:00">
+                2018-03-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/编程/" itemprop="url" rel="index">
+                    <span itemprop="name">编程</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2018/03/13/编程/mq/RabbitMQ/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="安装RabbitMQ"><a href="#安装RabbitMQ" class="headerlink" title="安装RabbitMQ"></a>安装RabbitMQ</h2><p><strong>环境说明:</strong></p>
+<p>1.操作系统:centos 7</p>
+<p>2.RabbitMq:3.7.3</p>
+<p>3.erlang:v20.2.3</p>
+<p>4.centos已经关闭防火墙</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;!--查看防火墙状态--&gt;</div><div class="line">systemctl status firewalld.service</div><div class="line"></div><div class="line">&lt;!--关闭防火墙--&gt;</div><div class="line">systemctl stop firewalld.service #停止firewall</div><div class="line">systemctl disable firewalld.service #禁止firewall开机启动</div></pre></td></tr></table></figure>
+<h3 id="下载erlang"><a href="#下载erlang" class="headerlink" title="下载erlang"></a>下载erlang</h3><p><a href="https://github.com/rabbitmq/erlang-rpm/releases" target="_blank" rel="external">erlang rpm</a></p>
+<h3 id="下载rabbitmq"><a href="#下载rabbitmq" class="headerlink" title="下载rabbitmq"></a>下载rabbitmq</h3><p><a href="http://www.rabbitmq.com/install-rpm.html" target="_blank" rel="external">rabbitmq官网下载</a></p>
+<h3 id="开始安装"><a href="#开始安装" class="headerlink" title="开始安装"></a>开始安装</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[root@localhost soft]# cd rabbitmq/</div><div class="line">[root@localhost rabbitmq]# ll</div><div class="line">总用量 29752</div><div class="line">-rw-r--r--. 1 root root 18466680 2月  27 06:16 erlang-20.2.3-1.el7.centos.x86_64.rpm</div><div class="line">-rw-r--r--. 1 root root 11996604 2月  27 01:11 rabbitmq-server-3.7.3-1.el7.noarch.rpm</div><div class="line">[root@localhost rabbitmq]#</div></pre></td></tr></table></figure>
+<p>使用<figure class="highlight plain"><figcaption><span>install```分别安装erlang和rabbitmq-server</span></figcaption><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div><div class="line">### 完成安装</div><div class="line"></div><div class="line">#### erl</div><div class="line"></div><div class="line">输入```erl```,出现以下界面,说明erlang安装成功</div></pre></td></tr></table></figure></p>
+<p>[root@localhost rabbitmq]# erl<br>Erlang/OTP 20 [erts-9.2.1] [source] [64-bit] [smp:1:1] [ds:1:1:10] [async-threads:10] [hipe] [kernel-poll:false]</p>
+<p>Eshell V9.2.1  (abort with ^G)<br>1&gt; </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">#### 启动rabbitmq</div></pre></td></tr></table></figure>
+<p>[root@localhost rabbitmq]# service rabbitmq-server start<br>Redirecting to /bin/systemctl start rabbitmq-server.service<br>[root@localhost rabbitmq]# </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">##### 查看rabbitmq状态</div></pre></td></tr></table></figure>
+<p>[root@localhost rabbitmq]# service rabbitmq-server status<br>Redirecting to /bin/systemctl status rabbitmq-server.service<br>● rabbitmq-server.service - RabbitMQ broker<br>   Loaded: loaded (/usr/lib/systemd/system/rabbitmq-server.service; disabled; vendor preset: disabled)<br>   Active: active (running) since 三 2018-03-07 10:25:08 CST; 1min 14s ago<br> Main PID: 1325 (beam.smp)<br>   Status: “Initialized”<br>   CGroup: /system.slice/rabbitmq-server.service<br>           ├─1325 /usr/lib64/erlang/erts-9.2.1/bin/beam.smp -W w -A 64 -P 1048576 -t 5000000 -stbt db -zdbbl 128000…<br>           ├─1507 /usr/lib64/erlang/erts-9.2.1/bin/epmd -daemon<br>           ├─1639 erl_child_setup 1024<br>           ├─1659 inet_gethost 4<br>           └─1660 inet_gethost 4</p>
+<p>3月 07 10:25:04 localhost.localdomain rabbitmq-server[1325]: ##  ##<br>3月 07 10:25:04 localhost.localdomain rabbitmq-server[1325]: ##  ##      RabbitMQ 3.7.3. Copyright (C) 2007-201…nc.<br>3月 07 10:25:04 localhost.localdomain rabbitmq-server[1325]: ##########  Licensed under the MPL.  See <a href="http://ww...om/" target="_blank" rel="external">http://ww...om/</a><br>3月 07 10:25:04 localhost.localdomain rabbitmq-server[1325]: ######  ##<br><!--这里是log的位置--><br>3月 07 10:25:04 localhost.localdomain rabbitmq-server[1325]: ##########  Logs: /var/log/rabbitmq/rabbit@localhost.log<br>3月 07 10:25:04 localhost.localdomain rabbitmq-server[1325]: /var/log/rabbitmq/rabbit@localhost_upgrade.log<br>3月 07 10:25:04 localhost.localdomain rabbitmq-server[1325]: Starting broker…<br>3月 07 10:25:08 localhost.localdomain rabbitmq-server[1325]: systemd unit for activation check: “rabbitmq-serve…ce”<br>3月 07 10:25:08 localhost.localdomain systemd[1]: Started RabbitMQ broker.<br>3月 07 10:25:10 localhost.localdomain rabbitmq-server[1325]: completed with 3 plugins.<br>Hint: Some lines were ellipsized, use -l to show in full.<br>[root@localhost rabbitmq]# </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">##### 查看rabbitmq日志</div></pre></td></tr></table></figure>
+<p>[root@localhost rabbitmq]# cd /var/log/rabbitmq/<br>[root@localhost rabbitmq]# ls<br>erl_crash.dump  rabbit@localhost.log              rabbit@localhost_upgrade.log<br>log             rabbit@localhost.log-20180306.gz  rabbit@localhost_upgrade.log-20180306.gz</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"></div></pre></td></tr></table></figure>
+<p>[root@localhost rabbitmq]# cat rabbit@localhost.log<br> Starting RabbitMQ 3.7.3 on Erlang 20.2.3<br> Copyright (C) 2007-2018 Pivotal Software, Inc.<br> Licensed under the MPL.  See <a href="http://www.rabbitmq.com/" target="_blank" rel="external">http://www.rabbitmq.com/</a><br> 2018-03-07 10:25:04.157 [info] <0.247.0><br> node           : rabbit@localhost<br> home dir       : /var/lib/rabbitmq<br> <!--这是里配置文件的路径,我已经配置好了 --><br> <!--第一次安装完成的时候,配置文件是不存在的,需要我们新建一个--><br> config file(s) : /etc/rabbitmq/rabbitmq.config<br> cookie hash    : kdRZlH6EzW+h0o2u3onyUg==<br> log(s)         : /var/log/rabbitmq/rabbit@localhost.log<br>                : /var/log/rabbitmq/rabbit@localhost_upgrade.log<br> database dir   : /var/lib/rabbitmq/mnesia/rabbit@localhost<br>2018-03-07 10:25:08.222 [info] <0.255.0> Memory high watermark set to 390 MiB (409041305 bytes) of 975 MiB (1022603264 bytes) total</0.255.0></0.247.0></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">##### 新建rabbitmq config</div><div class="line"></div><div class="line">进入`/etc/rabbitmq/`目录,新建rabbitmq.config文件</div></pre></td></tr></table></figure>
+<p>[root@localhost rabbitmq]# cd /etc/rabbitmq/<br>[root@localhost rabbitmq]# vim rabbitmq.config </p>
+<p>[<br>{rabbit, [{tcp_listeners, [5672]}, {loopback_users, [“admin”]}]}<br>].<br>~<br>~<br>~<br>~<br>~<br>~<br>~<br>~<br>~<br>~<br>~<br>~<br>~<br>~<br>~<br>~<br>~<br>~<br>~<br>~<br>~<br>“rabbitmq.config” 3L, 70C                                                                           3,1          全部</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">rabbitmq默认创建的用户guest，密码也是guest，这个用户默认只能是本机访问，localhost或者127.0.0.1，从外部访问需要添加上面的配置,保存配置后重启服务。</div><div class="line"></div><div class="line">##### rabbitmq 命令</div></pre></td></tr></table></figure>
+<!--查看RabbitMQ中用户命令-->
+<p>rabbitmqctl list_users</p>
+<!--创建用户命令-->
+<p> rabbitmqctl add_user admin admin</p>
+<!--赋予用户权限命令-->
+<p> rabbitmqctl  set_permissions -p “/“ admin ‘.<em>‘ ‘.</em>‘ ‘.*’</p>
+<!--赋予用户角色命令-->
+<p> rabbitmqctl set_user_tags admin administrator</p>
+<!--开启rabbitmq管理控制台命令-->
+<p>rabbitmq-plugins enable rabbitmq_management</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">##### rabbitmq管理界面</div><div class="line">![image](http://p5in4o880.bkt.clouddn.com//loveyy/image/mq/admin_index.png)</div><div class="line"></div><div class="line">## Java使用rabbitmq</div><div class="line"></div><div class="line">### MAVEN依赖</div></pre></td></tr></table></figure>
+<dependency><br>    <groupid>com.rabbitmq</groupid><br>    <artifactid>amqp-client</artifactid><br>    <version>5.1.2</version><br></dependency>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">### 消息生产者代码</div></pre></td></tr></table></figure>
+<p>public class DirectProducer {</p>
+<pre><code>public static final String QUEUE_NAME = &quot;com.szl.direct.que&quot;;
+public static final String DIRECT_EXCHANGE_NAME = &quot;com.szl.direct.exchange&quot;;
+public static final String ROUTING_KEY = &quot;com.szl.direct.que.routing&quot;;
+
+public static void main(String[] args){
+
+    // 创建连接工厂
+    ConnectionFactory factory = RabbitMqBase.getConnectionFactoryInstance();
+    Connection connection = null;
+    Channel channel = null;
+
+    // 设置rabbitmq
+    factory.setHost(&quot;192.168.56.128&quot;);
+    factory.setPort(5672);
+    factory.setVirtualHost(&quot;/&quot;);
+    factory.setUsername(&quot;admin&quot;);
+    factory.setPassword(&quot;admin&quot;);
+    try {
+        // 创建一个连接
+        connection= RabbitMqBase.getConnection(factory);
+
+        // 创建一个通道
+        channel = RabbitMqBase.getChannel(connection);
+
+        // 声明一个交换机,这里使用DIRECT
+        channel.exchangeDeclare(DIRECT_EXCHANGE_NAME, BuiltinExchangeType.DIRECT,true);
+
+        // 声明一个队列
+        channel.queueDeclare(QUEUE_NAME, true, false, false, null);
+
+        // 队列绑定到交换机
+        channel.queueBind(QUEUE_NAME,DIRECT_EXCHANGE_NAME,ROUTING_KEY);
+
+        // 发送消息到队列
+        System.out.println(&quot;-----写入消息队列开始------&quot;);
+        for (int i = 1; i &lt; 11; i++) {
+            String message = &quot;Hello rabbitmq(&quot; + i + &quot;)&quot;;
+            channel.basicPublish(DIRECT_EXCHANGE_NAME,ROUTING_KEY,null,message.getBytes());
+        }
+        System.out.println(&quot;-----写入消息队列完成------&quot;);
+    } catch (IOException e) {
+        e.printStackTrace();
+    } catch (TimeoutException e) {
+        e.printStackTrace();
+    }
+    finally {
+        try {
+            RabbitMqBase.close(connection,channel);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (TimeoutException e) {
+            e.printStackTrace();
+        }
+    }
+
+}
+</code></pre><p>}</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">### 运行消息提供者</div><div class="line"></div><div class="line">运行消息提供者,我们可以在MQ管理控制台看到刚刚写入的对列消息</div><div class="line"></div><div class="line">![image](http://p5in4o880.bkt.clouddn.com//loveyy/image/mq/mq_p.png)</div><div class="line"></div><div class="line"></div><div class="line">### 消息消费者</div></pre></td></tr></table></figure>
+<p>public class DirectCustomer extends CustomerBase {</p>
+<pre><code>public static void main(String[] args){
+    // 创建连接工厂
+    ConnectionFactory factory = RabbitMqBase.getConnectionFactoryInstance();
+
+    // 设置rabbitmq
+    factory.setHost(&quot;192.168.56.128&quot;);
+    factory.setPort(5672);
+
+    // 创建一个连接
+    Connection connection = null;
+    try {
+        connection = RabbitMqBase.getConnection(factory);
+
+        // 创建一个通道
+        Channel channel = RabbitMqBase.getChannel(connection);
+
+        // 声明一个交换机,这里使用DIRECT
+        channel.exchangeDeclare(DirectProducer.DIRECT_EXCHANGE_NAME, BuiltinExchangeType.DIRECT,true);
+
+        // 声明一个队列
+        channel.queueDeclare(DirectProducer.QUEUE_NAME, true, false, false, null);
+        // 监听一个通道
+        Consumer consumer = defaultConsumer(channel);
+
+        // 自动回复队列应答 -- RabbitMQ中的消息确认机制
+        channel.basicConsume(DirectProducer.QUEUE_NAME, true, consumer);
+    } catch (IOException e) {
+        e.printStackTrace();
+    } catch (TimeoutException e) {
+        e.printStackTrace();
+    }
+}
+</code></pre><p>}</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">### 运行消息消费者</div><div class="line"></div><div class="line">运行消息消费者,我们可以在MQ管理控制台看到已经有了消费者,且在控制台输出了接收到的消息内容</div><div class="line"></div><div class="line">- 控制台</div><div class="line"></div><div class="line">![image](http://p5in4o880.bkt.clouddn.com//loveyy/image/mq/mq_c.png)</div><div class="line"></div><div class="line">- 接收到的消息内容</div><div class="line"></div><div class="line">![image](http://p5in4o880.bkt.clouddn.com//loveyy/image/mq/mq_c_idea.png)</div><div class="line"></div><div class="line"></div><div class="line">++注意:以上代码使用的DIRECT模式,完整代码下载请[点我](https://github.com/leungandi/rabbitmq-demo)++</div><div class="line"></div><div class="line">## spring整合rabbitmq</div><div class="line"></div><div class="line">### MAVEN依赖</div></pre></td></tr></table></figure>
+<!--rabbitmq依赖-->
+<dependency><br>    <groupid>org.springframework.amqp</groupid><br>    <artifactid>spring-rabbit</artifactid><br>    <version>2.0.2.RELEASE</version><br></dependency>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">### rabbit.xml配置</div></pre></td></tr></table></figure>
+<p>&lt;?xml version=”1.0” encoding=”UTF-8”?&gt;</p>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:rabbit="http://www.springframework.org/schema/rabbit" xsi:schemalocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit.xsd"><br><br>    <!--RabbitMQ 服务器--><br>    <rabbit:connection-factory id="connectionFactory" addresses="192.168.56.128:5672" username="admin" password="admin" virtual-host="/"><br><br>    <rabbit:admin connection-factory="connectionFactory"><br><br>    <!--生产者--><br>    <!--定义queue --><br>    <rabbit:queue name="com.szl.direct.que" durable="true" auto-delete="false" exclusive="false"><br><br>    <!--定义exchange --><br>    <rabbit:direct-exchange name="com.szl.direct.exchange" durable="true" auto-delete="false"><br>        <rabbit:bindings><br>            <rabbit:binding queue="com.szl.direct.que" key="com.szl.direct.que.routing"><br>        </rabbit:binding></rabbit:bindings><br>    </rabbit:direct-exchange><br><br>    <!--声明一个 RabbitMQ Template--><br>    <rabbit:template id="amqpTemplate" connection-factory="connectionFactory" exchange="com.szl.direct.exchange" queue="com.szl.direct.que" routing-key="com.szl.direct.que.routing"><br><br>    <!--数据装换类--><br>    <bean id="jackson2JsonMessageConverter" class="org.springframework.amqp.support.converter.Jackson2JsonMessageConverter"><br><br><br><br>    <!-- 消费者 --><br>    <bean name="mqCustomer" class="com.szl.rabbit.customer.MqCustomer"><br>    <!-- 配置监听 --><br>    <rabbit:listener-container connection-factory="connectionFactory" message-converter="jackson2JsonMessageConverter"><br>        <rabbit:listener ref="mqCustomer" queue-names="com.szl.direct.que" method="onMessage"><br>    </rabbit:listener></rabbit:listener-container><br></bean></bean></rabbit:template></rabbit:queue></rabbit:admin></rabbit:connection-factory></beans>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">### aplicationContext.xml配置</div></pre></td></tr></table></figure>
+<p>&lt;?xml version=”1.0” encoding=”UTF-8”?&gt;</p>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context" xmlns:util="http://www.springframework.org/schema/util" xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx" xmlns:rabbit="http://www.springframework.org/schema/rabbit" xmlns:p="http://www.springframework.org/schema/p" xsi:schemalocation="
+     http://www.springframework.org/schema/context
+     http://www.springframework.org/schema/context/spring-context-3.0.xsd
+     http://www.springframework.org/schema/beans
+     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+     http://www.springframework.org/schema/util
+     http://www.springframework.org/schema/util/spring-util-3.0.xsd
+     http://www.springframework.org/schema/aop
+     http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+     http://www.springframework.org/schema/tx
+     http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+     http://www.springframework.org/schema/rabbit
+     http://www.springframework.org/schema/rabbit/spring-rabbit-1.0.xsd"><br><br>    <import resource="classpath*:rabbitmq.xml"><br><br><br>    <context:component-scan base-package="com.szl"><br><br>    <context:annotation-config><br><br><br></context:annotation-config></context:component-scan></import></beans>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">### 消息生产者</div></pre></td></tr></table></figure>
+<p>@Service(“mqProvider”)<br>public class MqProvider {</p>
+<pre><code>@Resource(name=&quot;amqpTemplate&quot;)
+private AmqpTemplate amqpTemplate;
+
+
+public void sendMsg() throws UnsupportedEncodingException {
+    System.out.println(&quot;spring:开始写入消息队列&quot;);
+    for (int i = 0; i &lt; 10 ; i++) {
+        String msg = &quot;Hello Spring-RabbitMq(&quot;+i+&quot;)&quot;;
+        Message message = MessageBuilder.withBody(msg.getBytes(&quot;utf-8&quot;))
+                .setMessageId(System.currentTimeMillis() + &quot;&quot;)
+                .build();
+        amqpTemplate.send(message);
+    }
+    System.out.println(&quot;spring:写入消息队列完成&quot;);
+}
+</code></pre><p>}</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">### 消息消费者</div></pre></td></tr></table></figure>
+<p>public class MqCustomer implements MessageListener{</p>
+<pre><code>public void onMessage(Message message) {
+    System.out.println(new String(message.getBody()));
+}
+</code></pre><p>}</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">### test</div></pre></td></tr></table></figure>
+<p>public class RabbitMqTest {</p>
+<pre><code>private ApplicationContext applicationContext = null;
+
+@Before
+public void init(){
+    applicationContext = new ClassPathXmlApplicationContext(&quot;applicationContext.xml&quot;);
+}
+
+@Test
+public void mqTest() throws InterruptedException, UnsupportedEncodingException {
+    MqProvider mqProvider = (MqProvider) applicationContext.getBean(&quot;mqProvider&quot;);
+    mqProvider.sendMsg();
+
+    // 暂停一下,让消费者去处理
+    Thread.sleep(6000);
+}
+</code></pre><p>}</p>
+<p>```</p>
+<h3 id="测试结果"><a href="#测试结果" class="headerlink" title="测试结果"></a>测试结果</h3><p><img src="http://p5in4o880.bkt.clouddn.com//loveyy/image/mq/mq_t.png" alt="image"></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/10/18/编程/redis/Redis5.0集群的简单搭建/" rel="next" title="Redis5.0集群的简单搭建">
+                <i class="fa fa-chevron-left"></i> Redis5.0集群的简单搭建
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/11/30/生活/写个女儿的第一封信/" rel="prev" title="写个女儿的第一封信">
+                写个女儿的第一封信 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Andrew Song" />
+          <p class="site-author-name" itemprop="name">Andrew Song</p>
+           
+              <p class="site-description motion-element" itemprop="description">只要开始,就不晚!</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/" title="CSDN" target="_blank">CSDN</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.cnblogs.com/" title="CNBLOG" target="_blank">CNBLOG</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装RabbitMQ"><span class="nav-number">1.</span> <span class="nav-text">安装RabbitMQ</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#下载erlang"><span class="nav-number">1.1.</span> <span class="nav-text">下载erlang</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#下载rabbitmq"><span class="nav-number">1.2.</span> <span class="nav-text">下载rabbitmq</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开始安装"><span class="nav-number">1.3.</span> <span class="nav-text">开始安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试结果"><span class="nav-number">1.4.</span> <span class="nav-text">测试结果</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andrew Song</span>
+</div>
+
+<!-- 
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+ -->
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "a65e94b0556544308ae1a6ec892f9609",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

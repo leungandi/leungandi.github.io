@@ -1,0 +1,872 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="nginx," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="Nginx简介Nginx是一个web服务器也可以用来做负载均衡及反向代理使用，目前使用最多的就是负载均衡 Nginx安装准备工作下载Nginx首先到官网下载Nginx,点击Nginx官网 下载模块依赖下载模块依赖性Nginx需要依赖下面3个包  gzip 模块需要 zlib 库 ( 下载: http://www.zlib.net/ ) rewrite 模块需要 pcre 库 ( 下载: http:">
+<meta name="keywords" content="nginx">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Nginx安装">
+<meta property="og:url" content="http://loveyy.net/2017/09/15/编程/nginx/Nginx安装与配置/index.html">
+<meta property="og:site_name" content="燕良山好汉的博客">
+<meta property="og:description" content="Nginx简介Nginx是一个web服务器也可以用来做负载均衡及反向代理使用，目前使用最多的就是负载均衡 Nginx安装准备工作下载Nginx首先到官网下载Nginx,点击Nginx官网 下载模块依赖下载模块依赖性Nginx需要依赖下面3个包  gzip 模块需要 zlib 库 ( 下载: http://www.zlib.net/ ) rewrite 模块需要 pcre 库 ( 下载: http:">
+<meta property="og:image" content="http://loveyy.net/images/nginx/ngnix.jpg">
+<meta property="og:image" content="http://loveyy.net/images/nginx/server1.jpg">
+<meta property="og:image" content="http://loveyy.net/images/nginx/server2.jpg">
+<meta property="og:image" content="http://loveyy.net/images/nginx/lib.jpg">
+<meta property="og:image" content="http://loveyy.net/images/nginx/server11.jpg">
+<meta property="og:image" content="http://loveyy.net/images/nginx/server22.jpg">
+<meta property="og:image" content="http://loveyy.net/images/nginx/redissession.jpg">
+<meta property="og:updated_time" content="2018-10-26T06:23:36.997Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Nginx安装">
+<meta name="twitter:description" content="Nginx简介Nginx是一个web服务器也可以用来做负载均衡及反向代理使用，目前使用最多的就是负载均衡 Nginx安装准备工作下载Nginx首先到官网下载Nginx,点击Nginx官网 下载模块依赖下载模块依赖性Nginx需要依赖下面3个包  gzip 模块需要 zlib 库 ( 下载: http://www.zlib.net/ ) rewrite 模块需要 pcre 库 ( 下载: http:">
+<meta name="twitter:image" content="http://loveyy.net/images/nginx/ngnix.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+<script>
+    (function(){
+        if(''){
+            if (prompt('这是私人日志,请输入文章密码') !== ''){
+                alert('亲,密码错误,请联系作者!');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+
+  <link rel="canonical" href="http://loveyy.net/2017/09/15/编程/nginx/Nginx安装与配置/"/>
+
+
+
+
+
+  <title>Nginx安装 | 燕良山好汉的博客</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?0de31a9b94e2d0af07ff23b34a742643";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">燕良山好汉的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://loveyy.net/2017/09/15/编程/nginx/Nginx安装与配置/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Andrew Song">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="燕良山好汉的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Nginx安装
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-15T14:25:00+08:00">
+                2017-09-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/LVS-Keepalived-Nginx/" itemprop="url" rel="index">
+                    <span itemprop="name">LVS + Keepalived + Nginx</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/09/15/编程/nginx/Nginx安装与配置/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="Nginx简介"><a href="#Nginx简介" class="headerlink" title="Nginx简介"></a>Nginx简介</h3><p>Nginx是一个web服务器也可以用来做负载均衡及反向代理使用，目前使用最多的就是负载均衡</p>
+<h3 id="Nginx安装"><a href="#Nginx安装" class="headerlink" title="Nginx安装"></a>Nginx安装</h3><h4 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h4><h5 id="下载Nginx"><a href="#下载Nginx" class="headerlink" title="下载Nginx"></a>下载Nginx</h5><p>首先到官网下载Nginx,点击<a href="http://nginx.org/en/download.html" target="_blank" rel="external">Nginx官网</a></p>
+<h5 id="下载模块依赖"><a href="#下载模块依赖" class="headerlink" title="下载模块依赖"></a>下载模块依赖</h5><p>下载模块依赖性Nginx需要依赖下面3个包</p>
+<ul>
+<li>gzip 模块需要 zlib 库 ( 下载: <a href="http://www.zlib.net/" target="_blank" rel="external">http://www.zlib.net/</a> )</li>
+<li>rewrite 模块需要 pcre 库 ( 下载: <a href="http://www.pcre.org/" target="_blank" rel="external">http://www.pcre.org/</a> )</li>
+<li>ssl 功能需要 openssl 库 ( 下载: <a href="http://www.openssl.org/" target="_blank" rel="external">http://www.openssl.org/</a> )</li>
+</ul>
+<p><strong>如果没有安装c + +编译环境，请通过yum install gcc-c++完成安装</strong></p>
+<h4 id="开始安装"><a href="#开始安装" class="headerlink" title="开始安装"></a>开始安装</h4><p>我把下载好的Nginx及相关组件放到<code>/opt/soft/nginx/</code>目录下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[root@localhost nginx]# cd /opt/soft/nginx/</div><div class="line">[root@localhost nginx]# ll</div><div class="line">总用量 5040</div><div class="line">-rw-r--r--. 1 root root  981093 9月   2 10:34 nginx-1.12.1.tar.gz</div><div class="line">-rw-r--r--. 1 root root 1492654 9月   2 10:47 openssl-fips-2.0.16.tar.gz</div><div class="line">-rw-r--r--. 1 root root 2068775 9月   2 10:47 pcre-8.41.tar.gz</div><div class="line">-rw-r--r--. 1 root root  607698 9月   2 10:47 zlib-1.2.11.tar.gz</div><div class="line">[root@localhost nginx]#</div></pre></td></tr></table></figure>
+<p>依赖包安装顺序依次为:openssl、zlib、pcre, 然后安装Nginx包</p>
+<h5 id="安装openssl"><a href="#安装openssl" class="headerlink" title="安装openssl"></a>安装openssl</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@localhost nginx]# tar openssl-fips-2.0.16.tar.gz </div><div class="line">[root@localhost nginx]# cd openssl-fips-2.0.16</div><div class="line">[root@localhost openssl-fips-2.0.16]# ./config &amp;&amp; make &amp;&amp; make install</div></pre></td></tr></table></figure>
+<h5 id="安装zlib"><a href="#安装zlib" class="headerlink" title="安装zlib"></a>安装zlib</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@localhost nginx]# tar -zxvf zlib-1.2.11.tar.gz </div><div class="line">[root@localhost nginx]# cd zlib-1.2.11</div><div class="line">[root@localhost nginx]# ./configure &amp;&amp; make &amp;&amp; make install</div></pre></td></tr></table></figure>
+<h5 id="安装pcre"><a href="#安装pcre" class="headerlink" title="安装pcre"></a>安装pcre</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@localhost nginx]# tar -zxvf pc</div><div class="line">[root@localhost nginx]# cd pcre-8.41</div><div class="line">[root@localhost nginx]# ./configure &amp;&amp; make &amp;&amp; make install</div></pre></td></tr></table></figure>
+<h5 id="安装nginx"><a href="#安装nginx" class="headerlink" title="安装nginx"></a>安装nginx</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[root@localhost nginx]# tar -zxvf nginx-1.12.1.tar.gz </div><div class="line">[root@localhost nginx]# cd nginx-1.12.1</div><div class="line">[root@localhost nginx]# ./configure &amp;&amp; make &amp;&amp; make install</div><div class="line">-- 查找ngnix安装目录</div><div class="line">[root@localhost nginx-1.12.1]# whereis nginx</div><div class="line">nginx: /usr/local/nginx</div></pre></td></tr></table></figure>
+<h3 id="启动Ngnix"><a href="#启动Ngnix" class="headerlink" title="启动Ngnix"></a>启动Ngnix</h3><p>进入到安装目录启动nginx<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">[root@localhost sbin]# cd /usr/local/nginx/sbin/</div><div class="line">[root@localhost sbin]# ./nginx </div><div class="line">./nginx: error while loading shared libraries: libpcre.so.1: cannot open shared object file: No such file or directory</div><div class="line">[root@localhost sbin]#</div></pre></td></tr></table></figure></p>
+<p>启动报错解决:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">1.用whereis libpcre.so.1命令找到libpcre.so.1在哪里</div><div class="line">2.用ln -s /usr/local/lib/libpcre.so.1 /lib64命令做个软连接就可以了</div><div class="line">3.用sbin/nginx启动Nginx</div><div class="line">[root@localhost nginx]# whereis libpcre.so.1</div><div class="line">[root@localhost nginx]# ln -s /usr/local/lib/libpcre.so.1 /lib64</div><div class="line">[root@localhost nginx]# sbin/nginx</div></pre></td></tr></table></figure></p>
+<p>查看启动状态<br>ps -aux | grep nginx<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@localhost sbin]# ps -aux | grep nginx </div><div class="line">Warning: bad syntax, perhaps a bogus &apos;-&apos;? See /usr/share/doc/procps-3.2.8/FAQ</div><div class="line">root      48399  0.0  0.0  20408   660 ?        Ss   11:57   0:00 nginx: master process ./nginx</div><div class="line">nobody    48400  0.0  0.1  20852  1260 ?        S    11:57   0:00 nginx: worker process</div><div class="line">root      48402  0.0  0.0 103268   884 pts/0    S+   11:58   0:00 grep nginx</div></pre></td></tr></table></figure></p>
+<p>启动后输入地址进入首页</p>
+<p><img src="/images/nginx/ngnix.jpg" alt="nginx首页"></p>
+<h3 id="Nginx基本操作命令"><a href="#Nginx基本操作命令" class="headerlink" title="Nginx基本操作命令"></a>Nginx基本操作命令</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line">启动</div><div class="line">[root@localhost ~]# /usr/local/nginx/sbin/nginx</div><div class="line">停止/重启</div><div class="line">[root@localhost ~]# /usr/local/nginx/sbin/nginx -s stop(quit、reload)</div><div class="line">命令帮助</div><div class="line">[root@localhost ~]# /usr/local/nginx/sbin/nginx -h</div><div class="line">验证配置文件</div><div class="line">[root@localhost ~]# /usr/local/nginx/sbin/nginx -t</div><div class="line">配置文件</div><div class="line">[root@localhost ~]# vim /usr/local/nginx/conf/nginx.conf</div></pre></td></tr></table></figure>
+<h3 id="简单配置Ngnix"><a href="#简单配置Ngnix" class="headerlink" title="简单配置Ngnix"></a>简单配置Ngnix</h3><h4 id="配置nginx-conf"><a href="#配置nginx-conf" class="headerlink" title="配置nginx.conf"></a>配置nginx.conf</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div></pre></td><td class="code"><pre><div class="line">#================================以下是全局配置项</div><div class="line">#指定运行nginx的用户和用户组，默认情况下该选项关闭（关闭的情况就是nobody）</div><div class="line">#user  nobody;</div><div class="line">#运行nginx的进程数量</div><div class="line">worker_processes  1;</div><div class="line">#nginx运行错误的日志存放位置。当然您还可以指定错误级别</div><div class="line">#error_log  logs/error.log;</div><div class="line">#error_log  logs/error.log  notice;</div><div class="line">#error_log  logs/error.log  info;</div><div class="line">#指定主进程id文件的存放位置，虽然worker_processes != 1的情况下，会有很多进程，管理进程只有一个</div><div class="line">#pid        logs/nginx.pid;</div><div class="line"></div><div class="line"></div><div class="line">events &#123;</div><div class="line"> 	#每一个进程可同时建立的连接数量</div><div class="line">    worker_connections  1024;</div><div class="line">&#125;</div><div class="line">#================================以上是全局配置项</div><div class="line"></div><div class="line"></div><div class="line">http &#123;</div><div class="line"></div><div class="line"></div><div class="line">#================================以下是Nginx后端服务配置项</div><div class="line">    upstream my_server&#123;</div><div class="line">        #nginx向后端服务器分配请求任务的方式，默认为轮询；如果指定了ip_hash，就是hash算法（上文介绍的算法内容）</div><div class="line">        #ip_hash;    </div><div class="line">        #后端服务器 ip:port ，如果有多个服务节点，这里就配置多个</div><div class="line">        server 192.168.1.21:8082; </div><div class="line">        server 192.168.1.23:8082;     </div><div class="line">        #backup表示，这个是一个备份节点，只有当所有节点失效后，nginx才会往这个节点分配请求任务</div><div class="line">        #server 192.168.220.133:8080 backup;        </div><div class="line">        #weight，固定权重，还记得我们上文提到的加权轮询方式吧。</div><div class="line">        #server 192.168.220.134:8080 weight=100;    </div><div class="line">    &#125;</div><div class="line">#================================以上是Nginx后端服务配置项</div><div class="line"></div><div class="line"> #=================================================以下是 http 协议主配置</div><div class="line"> 	#安装nginx后，在conf目录下除了nginx.conf主配置文件以外，有很多模板配置文件，这里就是导入这些模板文件</div><div class="line">    include       mime.types;</div><div class="line">    #HTTP核心模块指令，这里设定默认类型为二进制流，也就是当文件类型未定义时使用这种方式</div><div class="line">    default_type  application/octet-stream;</div><div class="line">    #日志格式</div><div class="line">    #log_format  main  &apos;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &apos;</div><div class="line">    #                  &apos;$status $body_bytes_sent &quot;$http_referer&quot; &apos;</div><div class="line">    #                  &apos;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&apos;;</div><div class="line">    #日志文件存放的位置</div><div class="line">    #access_log  logs/access.log  main;</div><div class="line"></div><div class="line">    sendfile        on;</div><div class="line">    #tcp_nopush     on;</div><div class="line"> 	#指定一个连接的等待时间（单位秒），如果超过等待时间，连接就会断掉。注意一定要设置，否则高并发情况下会产生性能问题。</div><div class="line">    #keepalive_timeout  0;</div><div class="line">    keepalive_timeout  65;</div><div class="line">	#开启数据压缩</div><div class="line">    #gzip  on;</div><div class="line">#=================================================以上是 http 协议主配置</div><div class="line"></div><div class="line">#=================================================以下是一个服务实例的配置</div><div class="line">    #每一个server就是一个虚拟主机，我们有一个当作web服务器来使用</div><div class="line">    #listen 80;代表监听80端口</div><div class="line">	#server_name xxx.com;代表外网访问的域名</div><div class="line">	#location / &#123;&#125;;代表一个过滤器，/匹配所有请求，我们还可以根据自己的情况定义不同的过滤，比如对静态文件js、css、image制定专属过滤</div><div class="line">	#root html;代表站点根目录</div><div class="line">	#index index.html;代表默认主页</div><div class="line">    server &#123;</div><div class="line">        listen       80;</div><div class="line">        server_name  nginx.test.com;</div><div class="line"></div><div class="line">        #文字格式</div><div class="line">        charset utf-8; </div><div class="line"></div><div class="line">        #access_log  logs/host.access.log  main;</div><div class="line"></div><div class="line">        location / &#123;</div><div class="line">            root   html;</div><div class="line">            index  index.html index.htm;</div><div class="line">            #反向代理</div><div class="line">            proxy_pass   http://my_server;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        #error_page  404              /404.html;</div><div class="line"></div><div class="line">        # redirect server error pages to the static page /50x.html</div><div class="line">        #</div><div class="line">        error_page   500 502 503 504  /50x.html;</div><div class="line">        location = /50x.html &#123;</div><div class="line">            root   html;</div><div class="line">        &#125;</div><div class="line"></div><div class="line">        # proxy the PHP scripts to Apache listening on 127.0.0.1:80</div><div class="line">        #</div><div class="line">        #location ~ \.php$ &#123;</div><div class="line">        #    proxy_pass   http://127.0.0.1;</div><div class="line">        #&#125;</div><div class="line"></div><div class="line">        # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000</div><div class="line">        #</div><div class="line">        #location ~ \.php$ &#123;</div><div class="line">        #    root           html;</div><div class="line">        #    fastcgi_pass   127.0.0.1:9000;</div><div class="line">        #    fastcgi_index  index.php;</div><div class="line">        #    fastcgi_param  SCRIPT_FILENAME  /scripts$fastcgi_script_name;</div><div class="line">        #    include        fastcgi_params;</div><div class="line">        #&#125;</div><div class="line"></div><div class="line">        # deny access to .htaccess files, if Apache&apos;s document root</div><div class="line">        # concurs with nginx&apos;s one</div><div class="line">        #</div><div class="line">        #location ~ /\.ht &#123;</div><div class="line">        #    deny  all;</div><div class="line">        #&#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">     server &#123;</div><div class="line">        listen       81;</div><div class="line">        server_name  nginx.test1.com;</div><div class="line"></div><div class="line">        #charset koi8-r;</div><div class="line"></div><div class="line">        #access_log  logs/host.access.log  main;</div><div class="line"></div><div class="line">        location / &#123;</div><div class="line">            root   html;</div><div class="line">            index  index.html index.htm;</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">    # another virtual host using mix of IP-, name-, and port-based configuration</div><div class="line">    #</div><div class="line">    #server &#123;</div><div class="line">    #    listen       8000;</div><div class="line">    #    listen       somename:8080;</div><div class="line">    #    server_name  somename  alias  another.alias;</div><div class="line"></div><div class="line">    #    location / &#123;</div><div class="line">    #        root   html;</div><div class="line">    #        index  index.html index.htm;</div><div class="line">    #    &#125;</div><div class="line">    #&#125;</div><div class="line"></div><div class="line"></div><div class="line">    # HTTPS server</div><div class="line">    #</div><div class="line">    #server &#123;</div><div class="line">    #    listen       443 ssl;</div><div class="line">    #    server_name  localhost;</div><div class="line"></div><div class="line">    #    ssl_certificate      cert.pem;</div><div class="line">    #    ssl_certificate_key  cert.key;</div><div class="line"></div><div class="line">    #    ssl_session_cache    shared:SSL:1m;</div><div class="line">    #    ssl_session_timeout  5m;</div><div class="line"></div><div class="line">    #    ssl_ciphers  HIGH:!aNULL:!MD5;</div><div class="line">    #    ssl_prefer_server_ciphers  on;</div><div class="line"></div><div class="line">    #    location / &#123;</div><div class="line">    #        root   html;</div><div class="line">    #        index  index.html index.htm;</div><div class="line">    #    &#125;</div><div class="line">    #&#125;</div><div class="line">#=================================================以上是一个服务实例的配置</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>配置<a href="http://blog.csdn.net/yinwenjie/article/details/46620711" target="_blank" rel="external">参考这里</a>,感谢！！！</p>
+<h4 id="测试一下"><a href="#测试一下" class="headerlink" title="测试一下"></a>测试一下</h4><ul>
+<li>增加hosts</li>
+</ul>
+<p>打开<code>C:\Windows\System32\drivers\etc\hosts</code>文件，添加一下内容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">192.168.1.23 nginx.test.com nginx.test1.com</div></pre></td></tr></table></figure>
+<ul>
+<li>访问一下</li>
+</ul>
+<p>打开浏览器，访问nginx.test.com，我们的nginx默认采用轮询的策略,每刷新一次,可以看到访问了不同的服务器，sessionId也随之变化.</p>
+<p><img src="/images/nginx/server1.jpg" alt="image"></p>
+<hr>
+<p><img src="/images/nginx/server2.jpg" alt="image"></p>
+<h3 id="session共享"><a href="#session共享" class="headerlink" title="session共享"></a>session共享</h3><p>session存在memcache或者redis中，以这种方式来同步session，把session抽取出来，放到内存级数据库里面，解决了session共享问题，同时读取速度也是非常之快。</p>
+<h4 id="安装redis"><a href="#安装redis" class="headerlink" title="安装redis"></a>安装redis</h4><p>我们在192.168.1.23的服务器上安装了redis了，安装过程省略,查看redis进程</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@localhost utils]# ps -aux | grep redis</div><div class="line">Warning: bad syntax, perhaps a bogus &apos;-&apos;? See /usr/share/doc/procps-3.2.8/FAQ</div><div class="line">root       1316  0.1  0.0 130048   504 ?        Ssl  09:24   0:07 /usr/local/bin/redis-server 0.0.0.0:6379        </div><div class="line">root       1604  0.0  0.0 103272   892 pts/0    S+   10:49   0:00 grep redis</div><div class="line">[root@localhost utils]#</div></pre></td></tr></table></figure>
+<h4 id="加入第三方jar"><a href="#加入第三方jar" class="headerlink" title="加入第三方jar"></a>加入第三方jar</h4><p>在tomcat安装目录,我这里是<code>/opt/soft/apache-tomcat-7.0.81/lib</code>，添加以下3个所需的依赖jar包</p>
+<p><strong>目前仅支持tomcat-redis-session-manage-tomcat7.jar仅支持tomcat7.0</strong></p>
+<p>tomcat-redis-session-manage开源项目<a href="https://github.com/jcoleman/tomcat-redis-session-manager" target="_blank" rel="external">参考这里</a></p>
+<p><img src="/images/nginx/lib.jpg" alt="image"></p>
+<h4 id="修改context-xml配置文件"><a href="#修改context-xml配置文件" class="headerlink" title="修改context.xml配置文件"></a>修改context.xml配置文件</h4><p>修改context.xml配置文件,添加以下内容</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">&lt;Valve className=&quot;com.orangefunction.tomcat.redissessions.RedisSessionHandlerValve&quot; /&gt;  </div><div class="line">   &lt;Manager className=&quot;com.orangefunction.tomcat.redissessions.RedisSessionManager&quot;  </div><div class="line">        host=&quot;192.168.1.23&quot;  </div><div class="line">        port=&quot;6379&quot;  </div><div class="line">        database=&quot;0&quot;  </div><div class="line">        maxInactiveInterval=&quot;60&quot; /&gt;</div></pre></td></tr></table></figure>
+<h4 id="测试一下-1"><a href="#测试一下-1" class="headerlink" title="测试一下"></a>测试一下</h4><p>启动redis服务，重新启动所有tomcat，启动nginx，刷新nginx页面,两台tomcat页面可以看到sessionid值不变。</p>
+<p><img src="/images/nginx/server11.jpg" alt="image"></p>
+<hr>
+<p><img src="/images/nginx/server22.jpg" alt="image"></p>
+<hr>
+<p>查看redis中，的确存在该sessionId。</p>
+<p><img src="/images/nginx/redissession.jpg" alt="image"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">[root@localhost bin]# ./redis-cli </div><div class="line">127.0.0.1:6379&gt; keys *</div><div class="line">1) &quot;a11&quot;</div><div class="line">2) &quot;redis&quot;</div><div class="line">3) &quot;redis1&quot;</div><div class="line">4) &quot;77CEF56A6114DB7D7E22768FBB5ED24B&quot;</div><div class="line">5) &quot;user&quot;</div><div class="line">127.0.0.1:6379&gt;</div></pre></td></tr></table></figure>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/nginx/" rel="tag"># nginx</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/19/编程/nginx/Keepalived安装与配置/" rel="next" title="Keepalived安装">
+                <i class="fa fa-chevron-left"></i> Keepalived安装
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/08/30/总结/JunitTestException/" rel="prev" title="Spring使用Junit测试异常">
+                Spring使用Junit测试异常 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Andrew Song" />
+          <p class="site-author-name" itemprop="name">Andrew Song</p>
+           
+              <p class="site-description motion-element" itemprop="description">只要开始,就不晚!</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/" title="CSDN" target="_blank">CSDN</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.cnblogs.com/" title="CNBLOG" target="_blank">CNBLOG</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Nginx简介"><span class="nav-number">1.</span> <span class="nav-text">Nginx简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Nginx安装"><span class="nav-number">2.</span> <span class="nav-text">Nginx安装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#准备工作"><span class="nav-number">2.1.</span> <span class="nav-text">准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#下载Nginx"><span class="nav-number">2.1.1.</span> <span class="nav-text">下载Nginx</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#下载模块依赖"><span class="nav-number">2.1.2.</span> <span class="nav-text">下载模块依赖</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#开始安装"><span class="nav-number">2.2.</span> <span class="nav-text">开始安装</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#安装openssl"><span class="nav-number">2.2.1.</span> <span class="nav-text">安装openssl</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#安装zlib"><span class="nav-number">2.2.2.</span> <span class="nav-text">安装zlib</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#安装pcre"><span class="nav-number">2.2.3.</span> <span class="nav-text">安装pcre</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#安装nginx"><span class="nav-number">2.2.4.</span> <span class="nav-text">安装nginx</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动Ngnix"><span class="nav-number">3.</span> <span class="nav-text">启动Ngnix</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Nginx基本操作命令"><span class="nav-number">4.</span> <span class="nav-text">Nginx基本操作命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#简单配置Ngnix"><span class="nav-number">5.</span> <span class="nav-text">简单配置Ngnix</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#配置nginx-conf"><span class="nav-number">5.1.</span> <span class="nav-text">配置nginx.conf</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#测试一下"><span class="nav-number">5.2.</span> <span class="nav-text">测试一下</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#session共享"><span class="nav-number">6.</span> <span class="nav-text">session共享</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#安装redis"><span class="nav-number">6.1.</span> <span class="nav-text">安装redis</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#加入第三方jar"><span class="nav-number">6.2.</span> <span class="nav-text">加入第三方jar</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#修改context-xml配置文件"><span class="nav-number">6.3.</span> <span class="nav-text">修改context.xml配置文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#测试一下-1"><span class="nav-number">6.4.</span> <span class="nav-text">测试一下</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andrew Song</span>
+</div>
+
+<!-- 
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+ -->
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "a65e94b0556544308ae1a6ec892f9609",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

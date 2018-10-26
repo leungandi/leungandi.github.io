@@ -1,0 +1,881 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="nginx," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="Keepalived简介 Keepalived的作用是检测服务器的状态，如果有一台web服务器宕机，或工作出现故障，Keepalived将检测到，并将有故障的服务器从系统中剔除，同时使用其他服务器代替该服务器的工作，当服务器工作正常后Keepalived自动将服务器加入到服务器群中，这些工作全部自动完成，不需要人工干涉，需要人工做的只是修复故障的服务器。  Keepalived安装准备工作下载Ke">
+<meta name="keywords" content="nginx">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Keepalived安装">
+<meta property="og:url" content="http://loveyy.net/2017/09/19/编程/nginx/Keepalived安装与配置/index.html">
+<meta property="og:site_name" content="燕良山好汉的博客">
+<meta property="og:description" content="Keepalived简介 Keepalived的作用是检测服务器的状态，如果有一台web服务器宕机，或工作出现故障，Keepalived将检测到，并将有故障的服务器从系统中剔除，同时使用其他服务器代替该服务器的工作，当服务器工作正常后Keepalived自动将服务器加入到服务器群中，这些工作全部自动完成，不需要人工干涉，需要人工做的只是修复故障的服务器。  Keepalived安装准备工作下载Ke">
+<meta property="og:image" content="http://loveyy.net/images/keepalived/master.jpg">
+<meta property="og:image" content="http://loveyy.net/images/keepalived/backup.jpg">
+<meta property="og:updated_time" content="2018-10-26T06:23:36.917Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Keepalived安装">
+<meta name="twitter:description" content="Keepalived简介 Keepalived的作用是检测服务器的状态，如果有一台web服务器宕机，或工作出现故障，Keepalived将检测到，并将有故障的服务器从系统中剔除，同时使用其他服务器代替该服务器的工作，当服务器工作正常后Keepalived自动将服务器加入到服务器群中，这些工作全部自动完成，不需要人工干涉，需要人工做的只是修复故障的服务器。  Keepalived安装准备工作下载Ke">
+<meta name="twitter:image" content="http://loveyy.net/images/keepalived/master.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+<script>
+    (function(){
+        if(''){
+            if (prompt('这是私人日志,请输入文章密码') !== ''){
+                alert('亲,密码错误,请联系作者!');
+                history.back();
+            }
+        }
+    })();
+</script>
+
+
+
+  <link rel="canonical" href="http://loveyy.net/2017/09/19/编程/nginx/Keepalived安装与配置/"/>
+
+
+
+
+
+  <title>Keepalived安装 | 燕良山好汉的博客</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+  <script type="text/javascript">
+    var _hmt = _hmt || [];
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?0de31a9b94e2d0af07ff23b34a742643";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">燕良山好汉的博客</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://loveyy.net/2017/09/19/编程/nginx/Keepalived安装与配置/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Andrew Song">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="燕良山好汉的博客">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                Keepalived安装
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-09-19T11:50:00+08:00">
+                2017-09-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/LVS-Keepalived-Nginx/" itemprop="url" rel="index">
+                    <span itemprop="name">LVS + Keepalived + Nginx</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                <span class="post-meta-divider">|</span>
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-comment-o"></i>
+                </span>
+                <a class="cloud-tie-join-count" href="/2017/09/19/编程/nginx/Keepalived安装与配置/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count join-count" itemprop="commentCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i>
+            <span class="busuanzi-value" id="busuanzi_value_page_pv" ></span>
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h3 id="Keepalived简介"><a href="#Keepalived简介" class="headerlink" title="Keepalived简介"></a>Keepalived简介</h3><blockquote>
+<p>Keepalived的作用是检测服务器的状态，如果有一台web服务器宕机，或工作出现故障，Keepalived将检测到，并将有故障的服务器从系统中剔除，同时使用其他服务器代替该服务器的工作，当服务器工作正常后Keepalived自动将服务器加入到服务器群中，这些工作全部自动完成，不需要人工干涉，需要人工做的只是修复故障的服务器。</p>
+</blockquote>
+<h3 id="Keepalived安装"><a href="#Keepalived安装" class="headerlink" title="Keepalived安装"></a>Keepalived安装</h3><h4 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h4><h5 id="下载Keepalived"><a href="#下载Keepalived" class="headerlink" title="下载Keepalived"></a>下载Keepalived</h5><p>首先到官网下载Keepalived,点击<a href="http://www.keepalived.org/download.html" target="_blank" rel="external">Keepalived官网</a></p>
+<p>我把下载好的Keepalived及相关组件放到<code>/opt/soft/Keepalived/</code>目录下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">[root@localhost nginx]# cd /opt/soft/Keepalived/</div><div class="line">[root@localhost nginx]# ll</div><div class="line">总用量 688</div><div class="line">-rw-r--r--. 1 root root 702570 9月   6 06:26 keepalived-1.2.17.tar.gz</div><div class="line">[root@localhost Keepalived]#</div></pre></td></tr></table></figure>
+<h5 id="准备nginx"><a href="#准备nginx" class="headerlink" title="准备nginx"></a>准备nginx</h5><p>准备两台Nginx的主机，我这里两台的ip分别是:</p>
+<ul>
+<li>192.168.1.21:80</li>
+<li>192.168.1.23:80</li>
+</ul>
+<p>也就是使用了上篇文章的nginx,hosts映射关系如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">192.168.1.23 nginx.test.com </div><div class="line">192.168.1.21 nginx.test1.com</div></pre></td></tr></table></figure>
+<h4 id="开始安装"><a href="#开始安装" class="headerlink" title="开始安装"></a>开始安装</h4><h5 id="安装Keepalived"><a href="#安装Keepalived" class="headerlink" title="安装Keepalived"></a>安装Keepalived</h5><p>分别在2台服务器独立安装Keepalived系统，一台是Master服务器(192.168.1.23)是主要的工作服务器，另一台是备份(slave)服务器(192.168.1.21)，在Master服务器出现问题后，由后者接替其工作,也就是在一台工作的Nginx崩溃的情况下，系统能够检测到，并自动将请求切换到另外一台备份的Nginx服务器上。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">[root@localhost Keepalived]# tar -zxvf keepalived-1.2.17.tar.gz </div><div class="line">[root@localhost Keepalived]# cd keepalived-1.2.17</div><div class="line">[root@localhost keepalived-1.2.17]# ./configure &amp;&amp;make &amp;&amp; make install</div></pre></td></tr></table></figure>
+<h5 id="安装目录"><a href="#安装目录" class="headerlink" title="安装目录"></a>安装目录</h5><p>安装时我们使用的默认路径安装,可以看到安装目录是<code>/usr/local/etc/keepalived</code>,<code>keepalived.conf</code>是keepalived的主要配置文件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">[root@localhost keepalived]# whereis keepalived</div><div class="line">keepalived: /usr/local/sbin/keepalived /usr/local/etc/keepalived</div><div class="line">[root@localhost keepalived]# cd /usr/local/etc/keepalived</div><div class="line">[root@localhost keepalived]# ls</div><div class="line">keepalived.conf  samples</div><div class="line">[root@localhost keepalived]#</div></pre></td></tr></table></figure>
+<h4 id="开始配置"><a href="#开始配置" class="headerlink" title="开始配置"></a>开始配置</h4><p>外网进行Nginx访问的浮动IP：192.168.1.222</p>
+<p>我们将192.168.1.23这台服务器上运行的Nginx作为主要的Nginx，其上的keepalived服务我们设置成Master方式。</p>
+<p>我们将192.168.1.21这台服务器上运行的Nginx作为备用的Nginx服务，其上的keepalived服务我们设置为Backup方式。</p>
+<h6 id="配置Master"><a href="#配置Master" class="headerlink" title="配置Master"></a>配置Master</h6><ul>
+<li>master上的原始IP信息</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">[root@localhost keepalived]# ifconfig</div><div class="line">eth0      Link encap:Ethernet  HWaddr 00:0C:29:0A:2E:4A  </div><div class="line">          inet addr:192.168.1.23  Bcast:192.168.1.255  Mask:255.255.255.0</div><div class="line">          inet6 addr: fe80::20c:29ff:fe0a:2e4a/64 Scope:Link</div><div class="line">          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1</div><div class="line">          RX packets:25943 errors:0 dropped:0 overruns:0 frame:0</div><div class="line">          TX packets:5586 errors:0 dropped:0 overruns:0 carrier:0</div><div class="line">          collisions:0 txqueuelen:1000 </div><div class="line">          RX bytes:8511108 (8.1 MiB)  TX bytes:915948 (894.4 KiB)</div><div class="line"></div><div class="line">lo        Link encap:Local Loopback  </div><div class="line">          inet addr:127.0.0.1  Mask:255.0.0.0</div><div class="line">          inet6 addr: ::1/128 Scope:Host</div><div class="line">          UP LOOPBACK RUNNING  MTU:16436  Metric:1</div><div class="line">          RX packets:1009 errors:0 dropped:0 overruns:0 frame:0</div><div class="line">          TX packets:1009 errors:0 dropped:0 overruns:0 carrier:0</div><div class="line">          collisions:0 txqueuelen:0 </div><div class="line">          RX bytes:257366 (251.3 KiB)  TX bytes:257366 (251.3 KiB)</div><div class="line"></div><div class="line">[root@localhost keepalived]#</div></pre></td></tr></table></figure>
+<ul>
+<li>MASTER keepalived.conf配置</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div><div class="line">172</div><div class="line">173</div><div class="line">174</div><div class="line">175</div><div class="line">176</div><div class="line">177</div><div class="line">178</div><div class="line">179</div><div class="line">180</div><div class="line">181</div><div class="line">182</div><div class="line">183</div><div class="line">184</div></pre></td><td class="code"><pre><div class="line">! Configuration File for keepalived</div><div class="line">#全局配置</div><div class="line">global_defs &#123;</div><div class="line">   #指定keepalived的发生切换时需要发送email的对象，一行一个。    </div><div class="line">   notification_email &#123;</div><div class="line">     acassen@firewall.loc</div><div class="line">     failover@firewall.loc</div><div class="line">     sysadmin@firewall.loc</div><div class="line">   &#125;</div><div class="line">   #指定发件人</div><div class="line">   notification_email_from Alexandre.Cassen@firewall.loc</div><div class="line">   #指定smtp服务器地址</div><div class="line">   smtp_server 192.168.200.1</div><div class="line">   #指定smtp连接超时时间</div><div class="line">   smtp_connect_timeout 30</div><div class="line">   #运行keepalived机器的一个标识</div><div class="line">   router_id LVS_DEVEL</div><div class="line">   vrrp_skip_check_adv_addr</div><div class="line">   vrrp_strict</div><div class="line">   vrrp_garp_interval 0</div><div class="line">   vrrp_gna_interval 0</div><div class="line">&#125;</div><div class="line"></div><div class="line">#检查nginx状态</div><div class="line">vrrp_script chknginx &#123;</div><div class="line">  script &quot;/etc/keepalived/checkNginx.sh&quot;</div><div class="line">    #每5秒钟，检查一次</div><div class="line">    interval 5</div><div class="line">&#125;</div><div class="line"></div><div class="line">#keepalived实例设置，是最重要的设置信息</div><div class="line">vrrp_instance VI_1 &#123;</div><div class="line">    #state状态MASTER表示是主要工作节点，备机为BACKUP。</div><div class="line">    #一个keepalived组中，最多只有一个MASTER节点，当然也可以没有</div><div class="line">    state MASTER</div><div class="line">    #实例所绑定的网卡设备，我的网卡设备是eth0。</div><div class="line">    interface eth0</div><div class="line">    #同一个keepalived组，节点的设置必须一样，这样才会被识别</div><div class="line">    virtual_router_id 51</div><div class="line">    #节点优先级，BACKUP的优先级一定要比MASTER的优先级低</div><div class="line">    priority 100</div><div class="line">    #组播信息发送间隔，两个节点设置必须一样</div><div class="line">    advert_int 1</div><div class="line">    #实际的eth1上的固定ip地址</div><div class="line">    mcast_src_ip=192.168.1.23</div><div class="line">    #验证信息，只有验证信息相同，才能被加入到一个组中。</div><div class="line">    authentication &#123;</div><div class="line">        auth_type PASS</div><div class="line">        auth_pass 1111</div><div class="line">    &#125;</div><div class="line">    #虚拟地址和绑定的端口，如果有多个，就绑定多个</div><div class="line">    #dev 是指定浮动IP要绑定的网卡设备号</div><div class="line">    virtual_ipaddress &#123;</div><div class="line">        192.168.1.222 dev eth0</div><div class="line">    &#125;</div><div class="line">    #设置的检查脚本</div><div class="line">    #关联上方的“vrrp_script chknginx”</div><div class="line">    track_script &#123;</div><div class="line">        chknginx</div><div class="line">    &#125; </div><div class="line">&#125;</div><div class="line"></div><div class="line">virtual_server 192.168.200.100 443 &#123;</div><div class="line">    delay_loop 6</div><div class="line">    lb_algo rr</div><div class="line">    lb_kind NAT</div><div class="line">    persistence_timeout 50</div><div class="line">    protocol TCP</div><div class="line"></div><div class="line">    real_server 192.168.201.100 443 &#123;</div><div class="line">        weight 1</div><div class="line">        SSL_GET &#123;</div><div class="line">            url &#123;</div><div class="line">              path /</div><div class="line">              digest ff20ad2481f97b1754ef3e12ecd3a9cc</div><div class="line">            &#125;</div><div class="line">            url &#123;</div><div class="line">              path /mrtg/</div><div class="line">              digest 9b3a0c85a887a256d6939da88aabd8cd</div><div class="line">            &#125;</div><div class="line">            connect_timeout 3</div><div class="line">            nb_get_retry 3</div><div class="line">            delay_before_retry 3</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">virtual_server 10.10.10.2 1358 &#123;</div><div class="line">    delay_loop 6</div><div class="line">    lb_algo rr </div><div class="line">    lb_kind NAT</div><div class="line">    persistence_timeout 50</div><div class="line">    protocol TCP</div><div class="line"></div><div class="line">    sorry_server 192.168.200.200 1358</div><div class="line"></div><div class="line">    real_server 192.168.200.2 1358 &#123;</div><div class="line">        weight 1</div><div class="line">        HTTP_GET &#123;</div><div class="line">            url &#123; </div><div class="line">              path /testurl/test.jsp</div><div class="line">              digest 640205b7b0fc66c1ea91c463fac6334d</div><div class="line">            &#125;</div><div class="line">            url &#123; </div><div class="line">              path /testurl2/test.jsp</div><div class="line">              digest 640205b7b0fc66c1ea91c463fac6334d</div><div class="line">            &#125;</div><div class="line">            url &#123; </div><div class="line">              path /testurl3/test.jsp</div><div class="line">              digest 640205b7b0fc66c1ea91c463fac6334d</div><div class="line">            &#125;</div><div class="line">            connect_timeout 3</div><div class="line">            nb_get_retry 3</div><div class="line">            delay_before_retry 3</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    real_server 192.168.200.3 1358 &#123;</div><div class="line">        weight 1</div><div class="line">        HTTP_GET &#123;</div><div class="line">            url &#123; </div><div class="line">              path /testurl/test.jsp</div><div class="line">              digest 640205b7b0fc66c1ea91c463fac6334c</div><div class="line">            &#125;</div><div class="line">            url &#123; </div><div class="line">              path /testurl2/test.jsp</div><div class="line">              digest 640205b7b0fc66c1ea91c463fac6334c</div><div class="line">            &#125;</div><div class="line">            connect_timeout 3</div><div class="line">            nb_get_retry 3</div><div class="line">            delay_before_retry 3</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">virtual_server 10.10.10.3 1358 &#123;</div><div class="line">    delay_loop 3</div><div class="line">    lb_algo rr </div><div class="line">    lb_kind NAT</div><div class="line">    persistence_timeout 50</div><div class="line">    protocol TCP</div><div class="line"></div><div class="line">    real_server 192.168.200.4 1358 &#123;</div><div class="line">        weight 1</div><div class="line">        HTTP_GET &#123;</div><div class="line">            url &#123; </div><div class="line">              path /testurl/test.jsp</div><div class="line">              digest 640205b7b0fc66c1ea91c463fac6334d</div><div class="line">            &#125;</div><div class="line">            url &#123; </div><div class="line">              path /testurl2/test.jsp</div><div class="line">              digest 640205b7b0fc66c1ea91c463fac6334d</div><div class="line">            &#125;</div><div class="line">            url &#123; </div><div class="line">              path /testurl3/test.jsp</div><div class="line">              digest 640205b7b0fc66c1ea91c463fac6334d</div><div class="line">            &#125;</div><div class="line">            connect_timeout 3</div><div class="line">            nb_get_retry 3</div><div class="line">            delay_before_retry 3</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    real_server 192.168.200.5 1358 &#123;</div><div class="line">        weight 1</div><div class="line">        HTTP_GET &#123;</div><div class="line">            url &#123; </div><div class="line">              path /testurl/test.jsp</div><div class="line">              digest 640205b7b0fc66c1ea91c463fac6334d</div><div class="line">            &#125;</div><div class="line">            url &#123; </div><div class="line">              path /testurl2/test.jsp</div><div class="line">              digest 640205b7b0fc66c1ea91c463fac6334d</div><div class="line">            &#125;</div><div class="line">            url &#123; </div><div class="line">              path /testurl3/test.jsp</div><div class="line">              digest 640205b7b0fc66c1ea91c463fac6334d</div><div class="line">            &#125;</div><div class="line">            connect_timeout 3</div><div class="line">            nb_get_retry 3</div><div class="line">            delay_before_retry 3</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h6 id="配置Backup"><a href="#配置Backup" class="headerlink" title="配置Backup"></a>配置Backup</h6><ul>
+<li>backup上的原始IP信息</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">[root@localhost keepalived-1.3.6]# ifconfig</div><div class="line">eth1      Link encap:Ethernet  HWaddr 00:0C:29:A0:47:EC  </div><div class="line">          inet addr:192.168.1.21  Bcast:192.168.1.255  Mask:255.255.255.0</div><div class="line">          inet6 addr: fe80::20c:29ff:fea0:47ec/64 Scope:Link</div><div class="line">          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1</div><div class="line">          RX packets:28083 errors:0 dropped:0 overruns:0 frame:0</div><div class="line">          TX packets:4543 errors:0 dropped:0 overruns:0 carrier:0</div><div class="line">          collisions:0 txqueuelen:1000 </div><div class="line">          RX bytes:8609984 (8.2 MiB)  TX bytes:707367 (690.7 KiB)</div><div class="line"></div><div class="line">lo        Link encap:Local Loopback  </div><div class="line">          inet addr:127.0.0.1  Mask:255.0.0.0</div><div class="line">          inet6 addr: ::1/128 Scope:Host</div><div class="line">          UP LOOPBACK RUNNING  MTU:16436  Metric:1</div><div class="line">          RX packets:128 errors:0 dropped:0 overruns:0 frame:0</div><div class="line">          TX packets:128 errors:0 dropped:0 overruns:0 carrier:0</div><div class="line">          collisions:0 txqueuelen:0 </div><div class="line">          RX bytes:82519 (80.5 KiB)  TX bytes:82519 (80.5 KiB)</div><div class="line"></div><div class="line">[root@localhost keepalived-1.3.6]#</div></pre></td></tr></table></figure>
+<ul>
+<li>BACKUP keepalived.conf配置</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div><div class="line">81</div><div class="line">82</div><div class="line">83</div><div class="line">84</div><div class="line">85</div><div class="line">86</div><div class="line">87</div><div class="line">88</div><div class="line">89</div><div class="line">90</div><div class="line">91</div><div class="line">92</div><div class="line">93</div><div class="line">94</div><div class="line">95</div><div class="line">96</div><div class="line">97</div><div class="line">98</div><div class="line">99</div><div class="line">100</div><div class="line">101</div><div class="line">102</div><div class="line">103</div><div class="line">104</div><div class="line">105</div><div class="line">106</div><div class="line">107</div><div class="line">108</div><div class="line">109</div><div class="line">110</div><div class="line">111</div><div class="line">112</div><div class="line">113</div><div class="line">114</div><div class="line">115</div><div class="line">116</div><div class="line">117</div><div class="line">118</div><div class="line">119</div><div class="line">120</div><div class="line">121</div><div class="line">122</div><div class="line">123</div><div class="line">124</div><div class="line">125</div><div class="line">126</div><div class="line">127</div><div class="line">128</div><div class="line">129</div><div class="line">130</div><div class="line">131</div><div class="line">132</div><div class="line">133</div><div class="line">134</div><div class="line">135</div><div class="line">136</div><div class="line">137</div><div class="line">138</div><div class="line">139</div><div class="line">140</div><div class="line">141</div><div class="line">142</div><div class="line">143</div><div class="line">144</div><div class="line">145</div><div class="line">146</div><div class="line">147</div><div class="line">148</div><div class="line">149</div><div class="line">150</div><div class="line">151</div><div class="line">152</div><div class="line">153</div><div class="line">154</div><div class="line">155</div><div class="line">156</div><div class="line">157</div><div class="line">158</div><div class="line">159</div><div class="line">160</div><div class="line">161</div><div class="line">162</div><div class="line">163</div><div class="line">164</div><div class="line">165</div><div class="line">166</div><div class="line">167</div><div class="line">168</div><div class="line">169</div><div class="line">170</div><div class="line">171</div></pre></td><td class="code"><pre><div class="line">! Configuration File for keepalived</div><div class="line">#全局配置</div><div class="line">global_defs &#123;</div><div class="line">   #指定keepalived的发生切换时需要发送email的对象，一行一个。    </div><div class="line">   notification_email &#123;</div><div class="line">     acassen@firewall.loc</div><div class="line">     failover@firewall.loc</div><div class="line">     sysadmin@firewall.loc</div><div class="line">   &#125;</div><div class="line">   #指定发件人</div><div class="line">   notification_email_from Alexandre.Cassen@firewall.loc</div><div class="line">   #指定smtp服务器地址</div><div class="line">   smtp_server 192.168.200.1</div><div class="line">   #指定smtp连接超时时间</div><div class="line">   smtp_connect_timeout 30</div><div class="line">   #运行keepalived机器的一个标识</div><div class="line">   router_id LVS_DEVEL_2</div><div class="line">   vrrp_skip_check_adv_addr</div><div class="line">   vrrp_strict</div><div class="line">   vrrp_garp_interval 0</div><div class="line">   vrrp_gna_interval 0</div><div class="line">&#125;</div><div class="line">#keepalived实例设置，是最重要的设置信息</div><div class="line">vrrp_instance VI_1 &#123;</div><div class="line">    #state状态MASTER表示是主要工作节点，备机为BACKUP。</div><div class="line">    #一个keepalived组中，最多只有一个MASTER节点，当然也可以没有</div><div class="line">    state BACKUP</div><div class="line">    #实例所绑定的网卡设备，我的备机网卡设备是eth1。</div><div class="line">    interface eth1</div><div class="line">    #同一个keepalived组，节点的设置必须一样，这样才会被识别</div><div class="line">    virtual_router_id 51</div><div class="line">    #节点优先级，BACKUP的优先级一定要比MASTER的优先级低</div><div class="line">    priority 99</div><div class="line">    #组播信息发送间隔，两个节点设置必须一样</div><div class="line">    advert_int 1</div><div class="line">    #实际的eth1上的固定ip地址</div><div class="line">    mcast_src_ip=192.168.1.21</div><div class="line">    #验证信息，只有验证信息相同，才能被加入到一个组中。</div><div class="line">    authentication &#123;</div><div class="line">        auth_type PASS</div><div class="line">        auth_pass 1111</div><div class="line">    &#125;</div><div class="line">    #虚拟地址和绑定的端口，如果有多个，就绑定多个</div><div class="line">    #dev 是指定浮动IP要绑定的网卡设备号</div><div class="line">    virtual_ipaddress &#123;</div><div class="line">        192.168.1.222 dev eth1</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">virtual_server 192.168.200.100 443 &#123;</div><div class="line">    delay_loop 6</div><div class="line">    lb_algo rr</div><div class="line">    lb_kind NAT</div><div class="line">    persistence_timeout 50</div><div class="line">    protocol TCP</div><div class="line"></div><div class="line">    real_server 192.168.201.100 443 &#123;</div><div class="line">        weight 1</div><div class="line">        SSL_GET &#123;</div><div class="line">            url &#123;</div><div class="line">              path /</div><div class="line">              digest ff20ad2481f97b1754ef3e12ecd3a9cc</div><div class="line">            &#125;</div><div class="line">            url &#123;</div><div class="line">              path /mrtg/</div><div class="line">              digest 9b3a0c85a887a256d6939da88aabd8cd</div><div class="line">            &#125;</div><div class="line">            connect_timeout 3</div><div class="line">            nb_get_retry 3</div><div class="line">            delay_before_retry 3</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">virtual_server 10.10.10.2 1358 &#123;</div><div class="line">    delay_loop 6</div><div class="line">    lb_algo rr </div><div class="line">    lb_kind NAT</div><div class="line">    persistence_timeout 50</div><div class="line">    protocol TCP</div><div class="line"></div><div class="line">    sorry_server 192.168.200.200 1358</div><div class="line"></div><div class="line">    real_server 192.168.200.2 1358 &#123;</div><div class="line">        weight 1</div><div class="line">        HTTP_GET &#123;</div><div class="line">            url &#123; </div><div class="line">              path /testurl/test.jsp</div><div class="line">              digest 640205b7b0fc66c1ea91c463fac6334d</div><div class="line">            &#125;</div><div class="line">            url &#123; </div><div class="line">              path /testurl2/test.jsp</div><div class="line">              digest 640205b7b0fc66c1ea91c463fac6334d</div><div class="line">            &#125;</div><div class="line">            url &#123; </div><div class="line">              path /testurl3/test.jsp</div><div class="line">              digest 640205b7b0fc66c1ea91c463fac6334d</div><div class="line">            &#125;</div><div class="line">            connect_timeout 3</div><div class="line">            nb_get_retry 3</div><div class="line">            delay_before_retry 3</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    real_server 192.168.200.3 1358 &#123;</div><div class="line">        weight 1</div><div class="line">        HTTP_GET &#123;</div><div class="line">            url &#123; </div><div class="line">              path /testurl/test.jsp</div><div class="line">              digest 640205b7b0fc66c1ea91c463fac6334c</div><div class="line">            &#125;</div><div class="line">            url &#123; </div><div class="line">              path /testurl2/test.jsp</div><div class="line">              digest 640205b7b0fc66c1ea91c463fac6334c</div><div class="line">            &#125;</div><div class="line">            connect_timeout 3</div><div class="line">            nb_get_retry 3</div><div class="line">            delay_before_retry 3</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div><div class="line"></div><div class="line">virtual_server 10.10.10.3 1358 &#123;</div><div class="line">    delay_loop 3</div><div class="line">    lb_algo rr </div><div class="line">    lb_kind NAT</div><div class="line">    persistence_timeout 50</div><div class="line">    protocol TCP</div><div class="line"></div><div class="line">    real_server 192.168.200.4 1358 &#123;</div><div class="line">        weight 1</div><div class="line">        HTTP_GET &#123;</div><div class="line">            url &#123; </div><div class="line">              path /testurl/test.jsp</div><div class="line">              digest 640205b7b0fc66c1ea91c463fac6334d</div><div class="line">            &#125;</div><div class="line">            url &#123; </div><div class="line">              path /testurl2/test.jsp</div><div class="line">              digest 640205b7b0fc66c1ea91c463fac6334d</div><div class="line">            &#125;</div><div class="line">            url &#123; </div><div class="line">              path /testurl3/test.jsp</div><div class="line">              digest 640205b7b0fc66c1ea91c463fac6334d</div><div class="line">            &#125;</div><div class="line">            connect_timeout 3</div><div class="line">            nb_get_retry 3</div><div class="line">            delay_before_retry 3</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    real_server 192.168.200.5 1358 &#123;</div><div class="line">        weight 1</div><div class="line">        HTTP_GET &#123;</div><div class="line">            url &#123; </div><div class="line">              path /testurl/test.jsp</div><div class="line">              digest 640205b7b0fc66c1ea91c463fac6334d</div><div class="line">            &#125;</div><div class="line">            url &#123; </div><div class="line">              path /testurl2/test.jsp</div><div class="line">              digest 640205b7b0fc66c1ea91c463fac6334d</div><div class="line">            &#125;</div><div class="line">            url &#123; </div><div class="line">              path /testurl3/test.jsp</div><div class="line">              digest 640205b7b0fc66c1ea91c463fac6334d</div><div class="line">            &#125;</div><div class="line">            connect_timeout 3</div><div class="line">            nb_get_retry 3</div><div class="line">            delay_before_retry 3</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="启动keepalived"><a href="#启动keepalived" class="headerlink" title="启动keepalived"></a>启动keepalived</h4><p>启动主节点和备用节点,keeplived启动关闭命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line">默认的安装位置是：/usr/local/etc/keepalived/</div><div class="line">[root@localhost init.d]# cp /usr/local/etc/rc.d/init.d/keepalived /etc/rc.d/init.d/ </div><div class="line">[root@localhost init.d]# cp /usr/local/etc/sysconfig/keepalived /etc/sysconfig/ </div><div class="line">[root@localhost init.d]# mkdir /etc/keepalived </div><div class="line">[root@localhost init.d]# cp /usr/local/etc/keepalived/keepalived.conf /etc/keepalived/ </div><div class="line">[root@localhost init.d]# cp /usr/local/sbin/keepalived /usr/sbin/</div></pre></td></tr></table></figure>
+<p>执行完以上几条命令后，我们就可以使用以下命令来启动、停止keepalived。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">[root@localhost init.d]# service keepalived start</div><div class="line">正在启动 keepalived：                                      [确定]</div><div class="line">[root@localhost init.d]# </div><div class="line">[root@localhost init.d]# ps -aux |grep keepalived </div><div class="line">Warning: bad syntax, perhaps a bogus &apos;-&apos;? See /usr/share/doc/procps-3.2.8/FAQ</div><div class="line">root       8934  0.0  0.0  40004   984 ?        Ss   08:45   0:00 keepalived -D</div><div class="line">root       8936  0.2  0.1  40128  1896 ?        S    08:45   0:00 keepalived -D</div><div class="line">root       8937  0.1  0.1  40004  1212 ?        S    08:45   0:00 keepalived -D</div><div class="line">root       8944  0.0  0.0 103268   888 pts/0    S+   08:46   0:00 grep keepalived</div><div class="line">[root@localhost init.d]# service keepalived stop</div><div class="line">停止 keepalived：                                          [确定]</div><div class="line">[root@localhost init.d]#</div></pre></td></tr></table></figure>
+<ul>
+<li>主机启动状态</li>
+</ul>
+<p>主机绑定了虚拟ip</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">[root@localhost keepalived]# service keepalived start</div><div class="line">正在启动 keepalived：                                      [确定]</div><div class="line">[root@localhost keepalived]# ip addr</div><div class="line">1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 16436 qdisc noqueue state UNKNOWN </div><div class="line">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</div><div class="line">    inet 127.0.0.1/8 scope host lo</div><div class="line">    inet6 ::1/128 scope host </div><div class="line">       valid_lft forever preferred_lft forever</div><div class="line">2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP qlen 1000</div><div class="line">    link/ether 00:0c:29:0a:2e:4a brd ff:ff:ff:ff:ff:ff</div><div class="line">    inet 192.168.1.23/24 brd 192.168.1.255 scope global eth0</div><div class="line">    inet 192.168.1.234/32 scope global eth0</div><div class="line">    inet6 fe80::20c:29ff:fe0a:2e4a/64 scope link </div><div class="line">       valid_lft forever preferred_lft forever</div><div class="line">[root@localhost keepalived]#</div></pre></td></tr></table></figure>
+<ul>
+<li>备机启动状态</li>
+</ul>
+<p>备机未绑定虚拟ip</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">[root@localhost log]# ip addr</div><div class="line">1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 16436 qdisc noqueue state UNKNOWN </div><div class="line">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</div><div class="line">    inet 127.0.0.1/8 scope host lo</div><div class="line">    inet6 ::1/128 scope host </div><div class="line">       valid_lft forever preferred_lft forever</div><div class="line">2: eth1: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP qlen 1000</div><div class="line">    link/ether 00:0c:29:a0:47:ec brd ff:ff:ff:ff:ff:ff</div><div class="line">    inet 192.168.1.21/24 brd 192.168.1.255 scope global eth1</div><div class="line">    inet6 fe80::20c:29ff:fea0:47ec/64 scope link </div><div class="line">       valid_lft forever preferred_lft forever</div></pre></td></tr></table></figure>
+<h5 id="测试一下"><a href="#测试一下" class="headerlink" title="测试一下"></a>测试一下</h5><p>1.访问192.168.1.234,进入主机的nginx<br><img src="/images/keepalived/master.jpg" alt="image"></p>
+<p>2.停掉192.168.1.23主机的keepalived服务,刷新页面,进入备机</p>
+<p><img src="/images/keepalived/backup.jpg" alt="image"></p>
+<p>主机ip:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">[root@localhost log]# ip addr</div><div class="line">1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 16436 qdisc noqueue state UNKNOWN </div><div class="line">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</div><div class="line">    inet 127.0.0.1/8 scope host lo</div><div class="line">    inet6 ::1/128 scope host </div><div class="line">       valid_lft forever preferred_lft forever</div><div class="line">2: eth0: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP qlen 1000</div><div class="line">    link/ether 00:0c:29:0a:2e:4a brd ff:ff:ff:ff:ff:ff</div><div class="line">    inet 192.168.1.23/24 brd 192.168.1.255 scope global eth0</div><div class="line">    inet6 fe80::20c:29ff:fe0a:2e4a/64 scope link </div><div class="line">       valid_lft forever preferred_lft forever</div><div class="line">[root@localhost log]#</div></pre></td></tr></table></figure>
+<p>备机ip:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[root@localhost log]# ip addr</div><div class="line">1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 16436 qdisc noqueue state UNKNOWN </div><div class="line">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</div><div class="line">    inet 127.0.0.1/8 scope host lo</div><div class="line">    inet6 ::1/128 scope host </div><div class="line">       valid_lft forever preferred_lft forever</div><div class="line">2: eth1: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP qlen 1000</div><div class="line">    link/ether 00:0c:29:a0:47:ec brd ff:ff:ff:ff:ff:ff</div><div class="line">    inet 192.168.1.21/24 brd 192.168.1.255 scope global eth1</div><div class="line">    inet 192.168.1.234/32 scope global eth1</div><div class="line">    inet6 fe80::20c:29ff:fea0:47ec/64 scope link </div><div class="line">       valid_lft forever preferred_lft forever</div><div class="line">[root@localhost log]#</div></pre></td></tr></table></figure>
+<p>备机日志:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div></pre></td><td class="code"><pre><div class="line"></div><div class="line">[root@localhost log]# tail -f messages</div><div class="line">Sep  6 09:34:25 localhost Keepalived_healthcheckers[7025]: Remote SMTP server [192.168.200.1]:25 connected.</div><div class="line">Sep  6 09:34:26 localhost Keepalived_healthcheckers[7025]: Timeout connect, timeout server [192.168.201.100]:443.</div><div class="line">Sep  6 09:34:26 localhost Keepalived_healthcheckers[7025]: Removing service [192.168.201.100]:443 from VS [192.168.200.100]:443</div><div class="line">Sep  6 09:34:26 localhost Keepalived_healthcheckers[7025]: Lost quorum 1-0=1 &gt; 0 for VS [192.168.200.100]:443</div><div class="line">Sep  6 09:34:26 localhost Keepalived_healthcheckers[7025]: Remote SMTP server [192.168.200.1]:25 connected.</div><div class="line">Sep  6 09:34:53 localhost Keepalived_healthcheckers[7025]: Timeout reading data to remote SMTP server [192.168.200.1]:25.</div><div class="line">Sep  6 09:34:53 localhost Keepalived_healthcheckers[7025]: Timeout reading data to remote SMTP server [192.168.200.1]:25.</div><div class="line">Sep  6 09:34:53 localhost Keepalived_healthcheckers[7025]: Timeout reading data to remote SMTP server [192.168.200.1]:25.</div><div class="line">Sep  6 09:34:55 localhost Keepalived_healthcheckers[7025]: Timeout reading data to remote SMTP server [192.168.200.1]:25.</div><div class="line">Sep  6 09:34:56 localhost Keepalived_healthcheckers[7025]: Timeout reading data to remote SMTP server [192.168.200.1]:25.</div><div class="line">Sep  6 09:40:15 localhost Keepalived_vrrp[7026]: VRRP_Instance(VI_1) Transition to MASTER STATE</div><div class="line">Sep  6 09:40:15 localhost Keepalived_vrrp[7026]: VRRP_Instance(VI_1) Entering MASTER STATE</div><div class="line">Sep  6 09:40:15 localhost Keepalived_vrrp[7026]: VRRP_Instance(VI_1) setting protocol VIPs.</div><div class="line">Sep  6 09:40:15 localhost Keepalived_vrrp[7026]: VRRP_Instance(VI_1) Sending gratuitous ARPs on eth1 for 192.168.1.234</div><div class="line">Sep  6 09:40:15 localhost Keepalived_healthcheckers[7025]: Netlink reflector reports IP 192.168.1.234 added</div><div class="line">Sep  6 09:40:20 localhost Keepalived_vrrp[7026]: VRRP_Instance(VI_1) Sending gratuitous ARPs on eth1 for 192.168.1.234</div></pre></td></tr></table></figure>
+<p>3.重新启动192.168.1.24主机的keepalived服务,刷新页面,重新进入主机</p>
+<p>备机日志:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">[root@localhost log]# tail -f messages</div><div class="line">Sep  6 09:40:15 localhost Keepalived_vrrp[7026]: VRRP_Instance(VI_1) Transition to MASTER STATE</div><div class="line">Sep  6 09:40:15 localhost Keepalived_vrrp[7026]: VRRP_Instance(VI_1) Entering MASTER STATE</div><div class="line">Sep  6 09:40:15 localhost Keepalived_vrrp[7026]: VRRP_Instance(VI_1) setting protocol VIPs.</div><div class="line">Sep  6 09:40:15 localhost Keepalived_vrrp[7026]: VRRP_Instance(VI_1) Sending gratuitous ARPs on eth1 for 192.168.1.234</div><div class="line">Sep  6 09:40:15 localhost Keepalived_healthcheckers[7025]: Netlink reflector reports IP 192.168.1.234 added</div><div class="line">Sep  6 09:40:20 localhost Keepalived_vrrp[7026]: VRRP_Instance(VI_1) Sending gratuitous ARPs on eth1 for 192.168.1.234</div><div class="line">Sep  6 09:42:37 localhost Keepalived_vrrp[7026]: VRRP_Instance(VI_1) Received higher prio advert</div><div class="line">Sep  6 09:42:37 localhost Keepalived_vrrp[7026]: VRRP_Instance(VI_1) Entering BACKUP STATE</div><div class="line">Sep  6 09:42:37 localhost Keepalived_vrrp[7026]: VRRP_Instance(VI_1) removing protocol VIPs.</div><div class="line">Sep  6 09:42:37 localhost Keepalived_healthcheckers[7025]: Netlink reflector reports IP 192.168.1.234 removed</div></pre></td></tr></table></figure>
+<h4 id="检测nginx状态脚本"><a href="#检测nginx状态脚本" class="headerlink" title="检测nginx状态脚本"></a>检测nginx状态脚本</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">#!/bin/sh</div><div class="line">if [ $(ps -C nginx | wc -l) -eq 1 ];then</div><div class="line">  service keepalived stop</div><div class="line">fi</div></pre></td></tr></table></figure>
+<ul>
+<li>注意字符集问题，否则脚本不能执行</li>
+<li>注意脚本权限问题，否则脚本不能运行</li>
+</ul>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/nginx/" rel="tag"># nginx</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/23/编程/dubbo/dubbo+zookeeper/" rel="next" title="dubbo+zookeeper">
+                <i class="fa fa-chevron-left"></i> dubbo+zookeeper
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/15/编程/nginx/Nginx安装与配置/" rel="prev" title="Nginx安装">
+                Nginx安装 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="cloud-tie-wrapper" class="cloud-tie-wrapper"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/images/avatar.png"
+               alt="Andrew Song" />
+          <p class="site-author-name" itemprop="name">Andrew Song</p>
+           
+              <p class="site-description motion-element" itemprop="description">只要开始,就不晚!</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">4</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+          <div class="links-of-blogroll motion-element links-of-blogroll-inline">
+            <div class="links-of-blogroll-title">
+              <i class="fa  fa-fw fa-globe"></i>
+              友情链接
+            </div>
+            <ul class="links-of-blogroll-list">
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://blog.csdn.net/" title="CSDN" target="_blank">CSDN</a>
+                </li>
+              
+                <li class="links-of-blogroll-item">
+                  <a href="http://www.cnblogs.com/" title="CNBLOG" target="_blank">CNBLOG</a>
+                </li>
+              
+            </ul>
+          </div>
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Keepalived简介"><span class="nav-number">1.</span> <span class="nav-text">Keepalived简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Keepalived安装"><span class="nav-number">2.</span> <span class="nav-text">Keepalived安装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#准备工作"><span class="nav-number">2.1.</span> <span class="nav-text">准备工作</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#下载Keepalived"><span class="nav-number">2.1.1.</span> <span class="nav-text">下载Keepalived</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#准备nginx"><span class="nav-number">2.1.2.</span> <span class="nav-text">准备nginx</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#开始安装"><span class="nav-number">2.2.</span> <span class="nav-text">开始安装</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#安装Keepalived"><span class="nav-number">2.2.1.</span> <span class="nav-text">安装Keepalived</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#安装目录"><span class="nav-number">2.2.2.</span> <span class="nav-text">安装目录</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#开始配置"><span class="nav-number">2.3.</span> <span class="nav-text">开始配置</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#配置Master"><span class="nav-number">2.3.0.1.</span> <span class="nav-text">配置Master</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#配置Backup"><span class="nav-number">2.3.0.2.</span> <span class="nav-text">配置Backup</span></a></li></ol></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#启动keepalived"><span class="nav-number">2.4.</span> <span class="nav-text">启动keepalived</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#测试一下"><span class="nav-number">2.4.1.</span> <span class="nav-text">测试一下</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#检测nginx状态脚本"><span class="nav-number">2.5.</span> <span class="nav-text">检测nginx状态脚本</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2017 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Andrew Song</span>
+</div>
+
+<!-- 
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+ -->
+
+        
+<div class="busuanzi-count">
+  <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i>
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      
+    </span>
+  
+</div>
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+    
+    <script>
+      var cloudTieConfig = {
+        url: document.location.href, 
+        sourceId: "",
+        productKey: "a65e94b0556544308ae1a6ec892f9609",
+        target: "cloud-tie-wrapper"
+      };
+    </script>
+    <script src="https://img1.ws.126.net/f2e/tie/yun/sdk/loader.js"></script>
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
